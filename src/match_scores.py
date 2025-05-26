@@ -1,4 +1,5 @@
 from load_responses import load_responses
+import random
 
 MATCH_SCORES_FILE = "sheets/match_scores.csv"
 
@@ -24,9 +25,11 @@ def load_match_scores():
     l = [MatchScore(0, 0, 0).from_string(pairing) for pairing in raw]
     return l
 
-def init_match_scores(responses):
+def init_match_scores():
     tutor_subjects = {}
     tutee_subjects = {}
+
+    responses = load_responses()
 
     for member in responses:
         for subject in member.subjects:
@@ -46,7 +49,8 @@ def init_match_scores(responses):
         for tutor in tutor_subjects[subject]:
             for tutee in tutee_subjects[subject]:
                 if tutor != tutee:
-                    match_scores.append(MatchScore(tutor, tutee, -1))
+                    # randomized for proof of concept
+                    match_scores.append(MatchScore(tutor, tutee, random.randint(1, 10)))
 
     with open(MATCH_SCORES_FILE, "w") as file:
         for match_score in match_scores:
@@ -55,7 +59,6 @@ def init_match_scores(responses):
     return match_scores
 
 if __name__ == "__main__":
-    responses = load_responses()
-    match_scores = init_match_scores(responses)
+    match_scores = init_match_scores()
     for match_score in match_scores:
         print(f"Tutor: {match_score.tutor}, Tutee: {match_score.tutee}, Score: {match_score.score}")

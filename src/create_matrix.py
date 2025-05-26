@@ -2,7 +2,7 @@ from match_scores import load_match_scores
 from load_responses import load_responses
 
 C = 500
-PSEUDO_INF = 500^3
+PSEUDO_INF = 500**3
 
 def create_matrix():
     tutors = []
@@ -20,8 +20,6 @@ def create_matrix():
             tutees.append(response)
 
     cost_matrix = [[0 for _ in range(len(tutees))] for _ in range(len(tutors))]
-    rows = tutors
-    cols = tutees
 
     for i in range(len(tutors)):
         tutor = tutors[i]
@@ -32,13 +30,11 @@ def create_matrix():
             common_subjects = [subject for subject in tutor.subjects if subject in tutee.subjects]
 
             if len(common_subjects) > 0:
-                cost_matrix[i][j] = -C
+                cost_matrix[i][j] = -C - match_score_dict.get((tutor.name, tutee.name), 0)
             else:
-                cost_matrix[i][j] = -PSEUDO_INF
+                cost_matrix[i][j] = PSEUDO_INF
 
-            cost_matrix[i][j] -= match_score_dict.get((tutor.name, tutee.name), 0)
-
-    return (cost_matrix, rows, cols)
+    return (cost_matrix, tutors, tutees)
 
 if __name__ == "__main__":
     print(create_matrix())
