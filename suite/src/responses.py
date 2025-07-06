@@ -12,13 +12,13 @@ class Member:
         self.subjects = response[2].split(", ")
         self.name = response[3]
 
-    def is_tutor(self):
+    def is_tutor(self) -> bool:
         return self.isTutor
     
-    def is_tutee(self):
+    def is_tutee(self) -> bool:
         return not self.isTutor
 
-def load_responses():
+def load_responses() -> list[Member]:
     with open(RESPONSES_FILE, "r") as file:
         responses = file.readlines()[1:] # skip header
     members = [Member(response) for response in responses]

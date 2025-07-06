@@ -1,10 +1,10 @@
-from match_scores import load_match_scores
-from load_responses import load_responses
+from src.match_scores import load_match_scores
+from src.responses import load_responses
 
 C = 500
 PSEUDO_INF = 500**3
 
-def create_matrix():
+def create_matrix() -> tuple:
     tutors = []
     tutees = []
 

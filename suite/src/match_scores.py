@@ -1,31 +1,30 @@
-from load_responses import load_responses
+from src.responses import load_responses
 import random
 
-MATCH_SCORES_FILE = "sheets/match_scores.csv"
+MATCH_SCORES_FILE = "data/match_scores.csv"
 
 class MatchScore:
-    def __init__(self, tutor, tutee, score):
+    @staticmethod
+    def default() -> "MatchScore":
+        return MatchScore("", "", -1)
+
+    def __init__(self, tutor: str, tutee: str, score: int):
         self.tutor = tutor
         self.tutee = tutee
         self.score = score
 
-    def from_string(self, line):
+    def from_string(line: str) -> "MatchScore":
         line = line.strip().split(",")
-        self.tutor = line[0]
-        self.tutee = line[1]
-        self.score = int(line[2])
-        return self
+        match_score = MatchScore.default()
+        match_score.tutor = line[0]
+        match_score.tutee = line[1]
+        match_score.score = int(line[2])
+        return match_score
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.tutor},{self.tutee},{self.score}"
 
-def load_match_scores():
-    with open("sheets/match_scores.csv", "r") as file:
-        raw = file.readlines()
-    l = [MatchScore(0, 0, 0).from_string(pairing) for pairing in raw]
-    return l
-
-def init_match_scores():
+def init_match_scores() -> list[MatchScore]:
     tutor_subjects = {}
     tutee_subjects = {}
 
@@ -49,8 +48,7 @@ def init_match_scores():
         for tutor in tutor_subjects[subject]:
             for tutee in tutee_subjects[subject]:
                 if tutor != tutee:
-                    # randomized for proof of concept
-                    match_scores.append(MatchScore(tutor, tutee, random.randint(1, 10)))
+                    match_scores.append(MatchScore(tutor, tutee, -1))
 
     with open(MATCH_SCORES_FILE, "w") as file:
         for match_score in match_scores:
@@ -58,7 +56,14 @@ def init_match_scores():
     
     return match_scores
 
-if __name__ == "__main__":
-    match_scores = init_match_scores()
-    for match_score in match_scores:
-        print(f"Tutor: {match_score.tutor}, Tutee: {match_score.tutee}, Score: {match_score.score}")
+def load_match_scores() -> list[MatchScore]:
+    with open(MATCH_SCORES_FILE, "r") as file:
+        raw = file.readlines()
+    # raw = [line.strip() for line in raw if line.strip()]
+    l = [MatchScore.from_string(pairing) for pairing in raw]
+    return l
+
+def write_match_scores(match_scores: list[MatchScore]) -> None:
+    with open(MATCH_SCORES_FILE, "w") as file:
+        for match_score in match_scores:
+            file.write(match_score.__repr__() + "\n")
