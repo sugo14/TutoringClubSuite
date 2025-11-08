@@ -1,9 +1,13 @@
-from src.responses import load_responses
+from src.responses import DAAHSMemberLoader
 import random
 
 MATCH_SCORES_FILE = "data/match_scores.csv"
 
 class MatchScore:
+    tutor: str
+    tutee: str
+    score: int
+
     @staticmethod
     def default() -> "MatchScore":
         return MatchScore("", "", -1)
@@ -28,7 +32,7 @@ def init_match_scores() -> list[MatchScore]:
     tutor_subjects = {}
     tutee_subjects = {}
 
-    responses = load_responses()
+    responses = DAAHSMemberLoader().load_members()
 
     for member in responses:
         for subject in member.subjects:
@@ -48,7 +52,7 @@ def init_match_scores() -> list[MatchScore]:
         for tutor in tutor_subjects[subject]:
             for tutee in tutee_subjects[subject]:
                 if tutor != tutee:
-                    match_scores.append(MatchScore(tutor, tutee, -1))
+                    match_scores.append(MatchScore(tutor, tutee, 0))
 
     with open(MATCH_SCORES_FILE, "w") as file:
         for match_score in match_scores:
