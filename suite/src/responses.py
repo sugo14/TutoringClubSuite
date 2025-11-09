@@ -83,12 +83,12 @@ class EduSparkMemberLoader(MemberLoader):
         header = []
         with open(EDUSPARK_TUTOR_FILE, "r") as file:
             responses = file.readlines()
-            header = responses[0].strip().split('\t')
+            header = responses[0].strip('\n').split('\t')
             responses = responses[1:] # skip header
         members = []
         for response in responses:
-            response = response.split('\t') # tab separated
-            print(response)
+            response = response.strip('\n').split('\t') # tab separated
+            # print(response)
             # if len(response) != 3:
             #     print(f"Invalid response: {response}")
             #     continue
@@ -127,10 +127,10 @@ class EduSparkMemberLoader(MemberLoader):
         header = []
         with open(EDUSPARK_STUDENT_FILE, "r") as file:
             responses = file.readlines()
-            header = responses[0].strip().split('\t')
+            header = responses[0].strip('\n').split('\t')
             responses = responses[1:] # skip header
         for response in responses:
-            response = response.strip().split('\t') # tab separated
+            response = response.strip('\n').split('\t') # tab separated
             print(response)
             # if len(response) != 3:
             #     print(f"Invalid response: {response}")
